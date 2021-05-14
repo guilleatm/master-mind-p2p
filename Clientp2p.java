@@ -113,7 +113,6 @@ public class Clientp2p {
 	// GAME LOGIC
 
 
-
 	private static void startGame() {
 
 		String[] message;
@@ -127,7 +126,7 @@ public class Clientp2p {
 			move();
 		}
 
-		while(turn < totalTurns && (!win && !lose)) {
+		while(turn < totalTurns && !win && !lose) {
 
 			message = readClientRequest();
 			chooseAction(message);
@@ -138,8 +137,13 @@ public class Clientp2p {
 			System.out.println("No te quedan turnos.");
 
 			if (MY_PORT < OTHER_PORT) {
-				message = readClientRequest();
-				System.out.println(message[0]);
+				message = readClientRequest(); // MOVE
+				chooseAction(message);
+
+				message = readClientRequest(); // MOVE_RESPONSE
+				chooseAction(message);
+
+				message = readClientRequest(); // DRAW
 				chooseAction(message);
 			} else {
 				System.out.println("Empate.");
@@ -151,9 +155,7 @@ public class Clientp2p {
 
 		System.out.println("Fin de la partida");
 
-		try {
-			socket.close();
-		} catch (IOException e) {}
+		closeSocket();
 
 	}
 
@@ -180,6 +182,7 @@ public class Clientp2p {
 
 
 	private static void win() {
+		clearScreen();
 		System.out.println("Has ganado!!");
 		win = true;
 	}
@@ -196,9 +199,7 @@ public class Clientp2p {
 			combination[i] = colors[random.nextInt(combinationSize)];
 		}
 		
-
 		return combination;
-	
 	}
 
 
@@ -253,6 +254,7 @@ public class Clientp2p {
 
 		if (black == 4) { // CLIENTE GANA
 			send("WIN\nnull\n");
+			clearScreen();
 			System.out.println("El oponente ha acertado, has perdido :(");
 			lose = true;
 
@@ -263,13 +265,6 @@ public class Clientp2p {
 	}
 
 	private static void send(String message) {
-		// try {
-		// 	//out.write(message);
-		// 	//out.flush();
-
-		// } catch (IOException e) {
-
-		// }
 		out.println(message);
 	}
 
@@ -295,6 +290,8 @@ public class Clientp2p {
 
 	private static void move() {
 
+		if (turn > totalTurns - 1) return;
+
 		System.out.print("Te toca, introduce tu jugada: ");
 
 		String move;
@@ -310,13 +307,21 @@ public class Clientp2p {
 		send("MOVE\n" + move + "\n");
 	}
 
-	public static void clearScreen() {
+	private static void clearScreen() {
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
 		try {
 			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-		} catch(IOException ex) {} 
+		} catch(IOException ex) {
+
+		} 
 		catch (InterruptedException ex) {}
+	}
+
+	private static void closeSocket() {
+		try {
+			socket.close();
+		} catch (IOException e) {}
 	}
 
 }
