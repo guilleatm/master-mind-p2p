@@ -19,7 +19,7 @@ public class Clientp2p {
 	public static final String[] actions = {"MOVE", "WIN", "MOVE_RESPONSE", "YOUR_TURN", "DRAW"};
 	private static String[] log;
 	private static Boolean win = false, lose = false;
-	private static int totalTurns = 1;
+	private static int totalTurns = 15;
 	private static int turn = 0;
 	private static char[] combination;
 
