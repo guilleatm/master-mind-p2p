@@ -1,18 +1,18 @@
 # master-mind-p2p
 
-# compile
+## compile
 
 ```bash
 javac Clientp2p.java
 ```
 
-# execute
+## execute
 
 ```bash
 java Clientp2p IP MY_PORT OTHER_PORT
 ```
 
-# example
+## example
 
 ```bash
 
